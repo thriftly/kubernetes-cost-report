@@ -80,7 +80,7 @@ var filtering []*pricing.Filter = []*pricing.Filter{
 	{
 		Type:  aws.String("TERM_MATCH"),
 		Field: aws.String("regionCode"),
-		Value: aws.String("eu-west-1"),
+		Value: aws.String("ap-south-1"),
 	},
 	{
 		Type:  aws.String("TERM_MATCH"),
@@ -235,7 +235,7 @@ func SpotMetric() ([]Spot, error) {
 		return nil, fmt.Errorf("session: %w", err)
 	}
 
-	svc := ec2.New(ses, aws.NewConfig().WithRegion("eu-west-1"))
+	svc := ec2.New(ses, aws.NewConfig().WithRegion("ap-south-1"))
 	endTime := time.Now()
 	startTime := endTime.AddDate(0, 0, -1)
 	input := &ec2.DescribeSpotPriceHistoryInput{
@@ -267,7 +267,7 @@ func PriceMetric() ([]*Price, error) {
 		return nil, fmt.Errorf("session: %w", err)
 	}
 
-	svc := pricing.New(ses, aws.NewConfig().WithRegion("us-east-1"))
+	svc := pricing.New(ses, aws.NewConfig().WithRegion("ap-south-1"))
 
 	input := &pricing.GetProductsInput{
 		Filters:     filtering,
@@ -300,7 +300,7 @@ func listInstances() ([]string, error) {
 	if err != nil {
 		return nil, fmt.Errorf("session: %w", err)
 	}
-	svc := ec2.New(ses, aws.NewConfig().WithRegion("eu-west-1"))
+	svc := ec2.New(ses, aws.NewConfig().WithRegion("ap-south-1"))
 
 	input := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
@@ -413,7 +413,7 @@ func spotInstancePriceCalc(spotPricing []Spot, onDemandPricing []*Price, allMach
 					Memory:         valueOnDemand.Memory,
 					Unit:           "Hrs",
 					AZ:             valueSpot.AZ,
-					Region:         "eu-west-1",
+					Region:         "ap-south-1",
 				}).Set(valueSpot.Price)
 				spotUnitPrice := valueSpot.CalcUnitPrice(valueSpot, valueOnDemand)
 				vCPUPricing.With(prometheus.Labels{
@@ -421,28 +421,28 @@ func spotInstancePriceCalc(spotPricing []Spot, onDemandPricing []*Price, allMach
 					instanceOption: "SPOT",
 					Unit:           "Hrs",
 					AZ:             valueSpot.AZ,
-					Region:         "eu-west-1",
+					Region:         "ap-south-1",
 				}).Set(spotUnitPrice.CPUPrice)
 				memPricing.With(prometheus.Labels{
 					instanceType:   valueSpot.InstanceType,
 					instanceOption: "SPOT",
 					Unit:           "Hrs",
 					AZ:             valueSpot.AZ,
-					Region:         "eu-west-1",
+					Region:         "ap-south-1",
 				}).Set(spotUnitPrice.MemPrice)
 				capacity.With(prometheus.Labels{
 					instanceType:   valueSpot.InstanceType,
 					instanceOption: "SPOT",
 					Unit:           "Hrs",
 					AZ:             valueSpot.AZ,
-					Region:         "eu-west-1",
+					Region:         "ap-south-1",
 				}).Set(spotUnitPrice.Capacity)
 				discount.With(prometheus.Labels{
 					instanceType:   valueSpot.InstanceType,
 					instanceOption: "SPOT",
 					Unit:           "Hrs",
 					AZ:             valueSpot.AZ,
-					Region:         "eu-west-1",
+					Region:         "ap-south-1",
 				}).Set(spotUnitPrice.Discount)
 
 				inUseOnDemnandMachineCalc(instanceTypes, valueSpot, inUseMachinePricing, valueOnDemand)
@@ -462,21 +462,21 @@ func instancePriceCalc(onDemandPricing []*Price, allMachinePricing, vCPUPricing,
 			Memory:         price.Memory,
 			Unit:           price.Unit,
 			AZ:             "",
-			Region:         "eu-west-1",
+			Region:         "ap-south-1",
 		}).Set(price.Price)
 		vCPUPricing.With(prometheus.Labels{
 			instanceType:   price.InstanceType,
 			instanceOption: "ON_DEMAND",
 			Unit:           price.Unit,
 			AZ:             "",
-			Region:         "eu-west-1",
+			Region:         "ap-south-1",
 		}).Set(onDemandUnitPrice.CPUPrice)
 		memPricing.With(prometheus.Labels{
 			instanceType:   price.InstanceType,
 			instanceOption: "ON_DEMAND",
 			Unit:           price.Unit,
 			AZ:             "",
-			Region:         "eu-west-1",
+			Region:         "ap-south-1",
 		}).Set(onDemandUnitPrice.MemPrice)
 
 		inUseSpotMachineCalc(instanceTypes, price, inUseMachinePricing)
@@ -493,7 +493,7 @@ func inUseSpotMachineCalc(instanceTypes []string, price *Price, inUseMachinePric
 				Memory:         price.Memory,
 				Unit:           price.Unit,
 				AZ:             "",
-				Region:         "eu-west-1",
+				Region:         "ap-south-1",
 			}).Set(price.Price)
 		}
 	}
@@ -509,7 +509,7 @@ func inUseOnDemnandMachineCalc(instanceTypes []string, valueSpot Spot, inUseMach
 				Memory:         valueOnDemand.Memory,
 				Unit:           "Hrs",
 				AZ:             valueSpot.AZ,
-				Region:         "eu-west-1",
+				Region:         "ap-south-1",
 			}).Set(valueSpot.Price)
 		}
 	}

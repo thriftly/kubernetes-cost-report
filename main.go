@@ -53,8 +53,21 @@ func main() {
 
 	http.HandleFunc("/metrics", func(rw http.ResponseWriter, r *http.Request) {
 		handler := promhttp.HandlerFor(reg, promhttp.HandlerOpts{})
+		resp, _ := reg.Gather()
+		tt := 0.0
+		for _, metric := range resp {
+			name := "instance_cost"
+			if *metric.Name == name {
+				for _, sample := range metric.GetMetric() {
+					tt += sample.GetGauge().GetValue()
+					fmt.Println(sample.Gauge.GetValue())
+				}
+			}
+		}
+		fmt.Println("Total cost: ", tt)
 		handler.ServeHTTP(rw, r)
 	})
+	fmt.Printf("done")
 
 	err = http.ListenAndServe(":8080", nil)
 	if err != nil {

@@ -11,6 +11,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
+    prometheus: prometheus
     grafana_dashboard: {{ include "kubernetes-cost-report.fullname" . }}
     {{- include "kubernetes-cost-report.labels" . | nindent 4 }}
   name: {{ include "kubernetes-cost-report.fullname" . }}-dashboard

@@ -36,9 +36,11 @@ Common labels
 {{- define "kubernetes-cost-report.labels" -}}
 helm.sh/chart: {{ include "kubernetes-cost-report.chart" . }}
 {{ include "kubernetes-cost-report.selectorLabels" . }}
+prometheus: prometheus
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
+prometheus: prometheus
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
@@ -48,6 +50,7 @@ Selector labels
 {{- define "kubernetes-cost-report.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "kubernetes-cost-report.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+prometheus: prometheus
 {{- end }}
 
 {{/*
